@@ -10,3 +10,6 @@ __pycache__/
 
 # Virtual environment
 venv/
+
+# Planning documents (personal reference)
+PROJECT_PLAN.md
