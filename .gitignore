@@ -1,2 +1,12 @@
 # Dataset (too large for GitHub)
 creditcard.csv
+
+# Processed data
+data/
+
+# Python
+__pycache__/
+*.pyc
+
+# Virtual environment
+venv/
