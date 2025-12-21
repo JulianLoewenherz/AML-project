@@ -78,13 +78,18 @@ def predict_fraud(transaction: TransactionSchema):
     
     # Step 1: Convert Pydantic model to dictionary then to DataFrame
     # This creates a single-row DataFrame with all 30 features
-    transaction_dict = transaction.dict()
+    transaction_dict = transaction.model_dump()
     df = pd.DataFrame([transaction_dict])
     
     # Step 2: Scale Time and Amount features
     # The model was trained on scaled data, so we must scale predictions too
     # We only scale Time and Amount (V1-V28 are already scaled from PCA)
     df[['Time', 'Amount']] = scaler.transform(df[['Time', 'Amount']])
+    
+    # IMPORTANT: Reorder columns to match training data
+    # Model expects: Time, V1, V2, ..., V28, Amount
+    column_order = ['Time'] + [f'V{i}' for i in range(1, 29)] + ['Amount']
+    df = df[column_order]
     
     # Step 3: Get fraud probability from model
     # predict_proba returns [[prob_legitimate, prob_fraud]]
@@ -93,9 +98,9 @@ def predict_fraud(transaction: TransactionSchema):
     fraud_probability = float(probabilities[0][1])
     
     # Step 4: Apply business rule threshold
-    # Flag as fraud if probability > 50%
+    # Flag as fraud if probability > 30%
     # (Lower threshold = catch more fraud, but more false alarms)
-    threshold = 0.5
+    threshold = 0.3
     is_fraud = fraud_probability > threshold
     
     # Step 5: Return prediction
