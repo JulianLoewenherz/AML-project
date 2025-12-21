@@ -11,5 +11,9 @@ __pycache__/
 # Virtual environment
 venv/
 
+# Models and MLflow
+models/
+mlruns/
+
 # Planning documents (personal reference)
 PROJECT_PLAN.md
